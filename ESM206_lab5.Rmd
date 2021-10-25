@@ -2,10 +2,65 @@
 title: "Lab 5"
 author: "Chase Tarr"
 date: "10/25/2021"
-output: html_document
+output: 
+  html_document: 
+    theme: spacelab
+    toc: yes
+    code_folding: hide # when we knit, this will allow code to be shown or hidden
 ---
 
-```{r setup, include=FALSE}
+Hitting setting gear and clicking output options allows you to change theme and insert a table of contents
+```{r setup, include=TRUE, warning = FALSE, messages = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(effsize)
 ```
+
+## Part 1: Confidence Intervals
+  - In this section we will use the `t.test()` function to calculate confidence intervals
+
+### Example 1
+  - Create a single mock sample containing a number of values, then learnt to use `t.test()` to return confidence intervals, and learn about in-line code referencing so our text becomes more reproducible, too.
+  
+```{r}
+# Create a mock sample
+otter_lengths <- c(30, 45, 28, 31, 34, 46, 52, 29, 90, 72, 112)
+
+# Find confidence interval from sample: 
+otter_ci <- t.test(otter_lengths)
+
+# Find the Standard Dev
+otter_sd <- sd(otter_lengths)
+
+otter_ci$statistic
+
+```
+  - Confidence interval states that when taking multiple samples from this population, we expect 95% of confidence intervals to be within the mean interval 29.08-44.67
+
+  - Mean otter length is 36.9 inches $\pm$ 9.3 (mean $\pm$ sd, n = 8) with a 95% confidence interval of [29.1, 44.7] inches. (NEED TO ADD SAMPLE SIZE, n) (ALSO NEED TO ADD SD described with the mean plus or minus the sd as seen above in parenthesis)
+
+learn: when calling things from list:
+  
+  - "objectname$valuename"
+  ex: otter_ci$p.value, ex: otter_ci$conf.int
+  etc
+
+#### Now, using in-line referencing
+  - Mean otter length is `r otter_ci$estimate`
+  - Mean otter length is `r round(otter_ci$estimate, 1)` inches.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

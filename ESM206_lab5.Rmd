@@ -41,17 +41,37 @@ otter_ci$statistic
 
 learn: when calling things from list:
   
-  - "objectname$valuename"
-  ex: otter_ci$p.value, ex: otter_ci$conf.int
-  etc
+  - objectname$valuename[refer to element in bracket, 1, 2 etc)]
+  ex: otter_ci$p.value 
+  ex: otter_ci$conf.int
 
 #### Now, using in-line referencing
   - Mean otter length is `r otter_ci$estimate`
-  - Mean otter length is `r round(otter_ci$estimate, 1)` inches.
+  - Mean otter length is `r round(otter_ci$estimate, 1)` inches with a 95% confidence interval of [`r otter_ci$conf.int[1]`, `r otter_ci$conf.int[2]`] inches.
+  - round the value using `r round(otter_ci$conf.int[2],1)`
+
+## Part 2: Two-Sample t-tests
+
+#### Example 1
+
+  - Make two mock samples, and ask the question: do we have sufficient evidence to make us reject the null hypothesis that these samples were drawn from populations with the  same mean?
+  
+```{r}
+# Make my mock samples
+oak_trees <- c(20, 19, 24, 28, 34, 12, 14, 25)
+
+pine_trees <- c(39, 26, 20, 30, 37, 22, 19, 18)
+
+# Two sample t-test
+trees_t <- t.test(oak_trees, pine_trees)
+
+# Null Hypothesis is that our mean heights are the same
+  # or... Trees are drawn from populations with the same mean height
+
+```
 
 
-
-
+The mean heights of o;ak and pine trees were (X +- Y), and  (X +- Y), respectively, and the difference was not significant (t (`r trees_t$parameter`) = `r trees_t$statistic`, p = `r trees_t$p.value` )
 
 
 

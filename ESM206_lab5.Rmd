@@ -45,14 +45,14 @@ learn: when calling things from list:
   ex: otter_ci$p.value 
   ex: otter_ci$conf.int
 
-#### Now, using in-line referencing
+### Now, using in-line referencing
   - Mean otter length is `r otter_ci$estimate`
   - Mean otter length is `r round(otter_ci$estimate, 1)` inches with a 95% confidence interval of [`r otter_ci$conf.int[1]`, `r otter_ci$conf.int[2]`] inches.
   - round the value using `r round(otter_ci$conf.int[2],1)`
 
 ## Part 2: Two-Sample t-tests
 
-#### Example 1
+### Example 1
 
   - Make two mock samples, and ask the question: do we have sufficient evidence to make us reject the null hypothesis that these samples were drawn from populations with the  same mean?
   
@@ -70,17 +70,70 @@ trees_t <- t.test(oak_trees, pine_trees)
 
 ```
 
+The mean heights of oak and pine trees were (X +- Y), and  (X +- Y), respectively, and the difference was not significant (t (`r trees_t$parameter`) = `r trees_t$statistic`, p = `r trees_t$p.value` )
 
-The mean heights of o;ak and pine trees were (X +- Y), and  (X +- Y), respectively, and the difference was not significant (t (`r trees_t$parameter`) = `r trees_t$statistic`, p = `r trees_t$p.value` )
+"two-sample t-test; t(df) = t-statistic, p = p-value" -see above in line referencing 
 
+When things get really small: (use p < 0.001)
 
+## Part 3: Another t-test with cars data
+  - Using the `mpg` dataset
 
+### Take a look at the dat
 
+```{r}
+compact_suv <- mpg %>%
+  filter(class %in% c("compact", "suv")) #look at all rows, and if the class column contains compact or suv, then keep that row
 
+# check for remaining levels to make sure filter worked
+unique(compact_suv$class)
+```
 
+### Create a histogram
+  - gas mileage (cty) faceted by class starting from compact_suv
 
+```{r}
+ggplot(data = compact_suv, aes(x = cty)) +
+  geom_histogram(bins = 18) +
+  facet_wrap(~ class) # splits up the two histograms based on class
 
+ggplot(data = compact_suv, aes(sample = cty)) +
+  geom_qq() + # for linear analysis and determining if normally distributed
+  facet_wrap(~ class)
+```
 
+Find summary statistics for each group.
 
+```{r}
+car_stats <- compact_suv %>% 
+  group_by(class) %>% 
+  summarize(
+    mean_city = round(mean(cty), 2), # rounding the value to 2 decimals
+    sd_city = round(sd(cty),2), # rounding the value to 2 decimals
+    sample_size = n()
+  )
 
+car_stats
+```
 
+The t.test() function really wants vectors of things. Use the `pull()` function to pull out a vector from a data frame.
+
+```{r}
+compact_sample <- compact_suv %>% 
+  filter(class == "compact") %>% 
+  pull(cty)
+
+# Your Turn: do the same thing to get a vector of city gas mileages of suvs
+
+Suv_cty <- compact_suv %>% 
+  filter(class == "suv") %>% 
+  pull(cty)
+```
+
+Ho: Mean city gas mileages for SUVs and compact cars are the same
+
+```{r}
+t.test(compact_sample, Suv_cty)
+```
+
+There is a significant difference in mean city gas mileage for SUVs and compact cars (t(df) = t-statistic, p <0.01)
